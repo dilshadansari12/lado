@@ -1,22 +1,13 @@
 import React, { useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
+import { useColorScheme } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import SplashScreen from 'react-native-splash-screen';
+import AppNavigator from './AppNavigator';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -36,26 +27,12 @@ function App(): React.JSX.Element {
   const safePadding = '5%';
 
   return (
-    <View >
-      <Text style={{ textAlign: "center", marginTop: 500 }}>Hello React Native  ok</Text>
-    </View>
-  );
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
+  )
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
