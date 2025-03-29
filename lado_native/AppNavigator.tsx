@@ -13,9 +13,12 @@ import Tracking from './Pages/Users/Tracking/Tracking';
 import Account from './Pages/Account/Account';
 
 import Ionicons from '@react-native-vector-icons/ionicons';
+import HomeHeader from './Pages/Users/Home/HomeHeader';
 
 const Stack = createNativeStackNavigator();
 const BottomTabNavigation = createBottomTabNavigator();
+
+
 
 const NavigatorIcon = ({ route, focused, color, size }:
     {
@@ -55,7 +58,11 @@ const AllTabs = () => {
                 // tabBarInactiveTintColor: 'gray',
             })}
         >
-            <BottomTabNavigation.Screen name="home" component={Home} options={{ title: "Home" }} />
+            <BottomTabNavigation.Screen
+                name="home"
+                component={Home}
+                options={({ navigation }) => ({ title: "Home", header: () => null, headerShadowVisible: false })}
+            />
             <BottomTabNavigation.Screen name="tracking" component={Tracking} options={{ title: "Tracking" }} />
             <BottomTabNavigation.Screen name="cart" component={Cart} options={{ title: "Cart", tabBarBadge: 5 }} />
             <BottomTabNavigation.Screen name='profile' component={Account} options={{ title: "Profile" }} />
@@ -71,7 +78,7 @@ const AppNavigator = () => {
             <Stack.Screen name='home' component={AllTabs} options={{ headerShown: false }} />
 
             {/* Hide the bottom */}
-            <Stack.Screen name="orderView" component={OrderView} />
+            <Stack.Screen name="orderView" component={OrderView} options={({ navigation }) => ({ header: () => null })} />
             <Stack.Screen name="address" component={Address} />
             <Stack.Screen name="payment" component={Payemnt} />
         </Stack.Navigator>

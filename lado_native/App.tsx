@@ -7,6 +7,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import SplashScreen from 'react-native-splash-screen';
 import AppNavigator from './AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 type SectionProps = PropsWithChildren<{
@@ -27,11 +28,13 @@ function App(): React.JSX.Element {
   const safePadding = '5%';
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }
 

@@ -1,19 +1,34 @@
 import React from "react"
 import { Text } from "@react-navigation/elements"
-import { Button, View } from "react-native";
+import { Button, ScrollView, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Ionicons from '@react-native-vector-icons/ionicons';
+import { colorSchema } from "../../Helper";
+import HomeHeader from "./HomeHeader";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { StatusBar } from "react-native";
 
 
 const Home = () => {
     const navigate = useNavigation();
+
     return (
-        <View>
-            <Text>Home screen</Text>
-            <Button title="Order View" onPress={() => { (navigate as any).navigate("orderView") }} />
-        </View>
+        <View style={style.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#daebde" />
+            <ScrollView>
+                <HomeHeader />
+            </ScrollView>
+        </View >
     )
 }
 
-export default Home; 
+export default Home;
+
+const style = StyleSheet.create({
+    container: {
+        backgroundColor: colorSchema?.background,
+        flex: 1,
+        justifyContent: "center",
+        alignContent: "center",
+    }
+})
