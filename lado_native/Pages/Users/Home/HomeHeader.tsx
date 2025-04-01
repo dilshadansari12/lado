@@ -1,21 +1,22 @@
-import { Dimensions, ScrollView, View, Image } from "react-native";
-import { colorSchema } from "../../Helper";
-import { Button, SearchBar, Switch } from "@rneui/base";
-import Ionicons from '@react-native-vector-icons/ionicons';
-import { Text } from "@rneui/base";
-
-import { runOnJS, useSharedValue } from "react-native-reanimated";
-import Carousel, {
-    ICarouselInstance,
-    Pagination,
-} from "react-native-reanimated-carousel";
 import React from "react";
 
-const HomeHeader = () => {
+import { Dimensions, View, Image } from "react-native";
+import { SearchBar, Switch, Text } from "@rneui/base";
+import Ionicons from '@react-native-vector-icons/ionicons';
+
+import { interpolate, runOnJS, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
+
+import { colorSchema } from "../../Helper";
+import { useNavigation } from "@react-navigation/native";
+
+
+const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBusy }: any) => {
+
     // const height = Dimensions.get("screen");
     // const mWidth = Dimensions.get("width");
-
     const width = Dimensions.get("window").width;
+    const navigation = useNavigation();
 
     const ref = React.useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
@@ -42,36 +43,42 @@ const HomeHeader = () => {
         { id: 7, url: require("../../../assets/foodbg7.png") },
         { id: 8, url: require("../../../assets/foodbg8.png") }
     ]
-    // maxHeight: 360, borderWidth: 2, borderColor: colorSchema.border, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 
+
+    const onSearchChange = (elements: any) => setSearchValue(elements);
+    const onModeChange = () => setVegMode(!vegMode);
+    const onClearSearch = () => setSearchValue('');
+    const onUserPress = () => navigation.navigate("profile");
 
     return (
-        <View style={{ backgroundColor: "white" }}>
+        <View style={{ backgroundColor: "#FF574A" }}>
             <View style={{ display: "flex", justifyContent: "space-around", alignContent: "center", alignItems: "center", flexDirection: "row" }}>
                 <View style={{ display: "flex", justifyContent: "center", alignContent: "center", width: width - 55 }}>
-                    <Text style={{ fontWeight: "bold" }}><Ionicons name="location" size={28} color={"black"} />Home</Text>
+                    <Text style={{ fontWeight: "bold", color: "black" }}><Ionicons name="location" size={28} color="black" />Home</Text>
                     <Text style={{ marginLeft: 10, color: "gray" }}>near masjid nagar unatri garhwa...</Text>
                 </View>
-                <Ionicons name="person-circle" size={33} color={"black"} />
+                <Ionicons name="person-circle" size={33} color={"tomato"} onPress={onUserPress} />
             </View>
-            <View style={{ display: "flex", justifyContent: "space-around", alignContent: "center", alignItems: "center", flexDirection: "row" }}>
+            <View style={{ display: "flex", justifyContent: "space-around", alignContent: "center", alignItems: "center", flexDirection: "row" }} >
                 <SearchBar
-                    onChangeText={() => { }}
-                    // value={"search"}
+                    onChangeText={onSearchChange}
+                    value={searchValue}
                     placeholder={"Search Dinner"}
                     searchIcon={<Ionicons name="search" size={22} color={"tomato"} />}
-                    clearIcon={<Ionicons name="close" size={22} color={"tomato"} />}
+                    clearIcon={<View style={{ borderLeftWidth: 1, paddingLeft: 5, borderLeftColor: "tomato" }}><Ionicons name="close" size={22} color={"tomato"} style={{ zIndex: 9999 }} onPress={onClearSearch} /></View>}
                     lightTheme={true}
                     round={true}
-                    showLoading={true}
+                    showLoading={searchBusy}
                     containerStyle={{ margin: 0, padding: 0, backgroundColor: "white", borderWidth: 1, borderRadius: 10, borderColor: "gray", width: width - 65, marginLeft: 10 }}
                     inputContainerStyle={{ backgroundColor: "white", margin: 0, padding: 0, height: 40 }}
                     inputStyle={{ color: "red" }}
                     style={{ fontSize: 14 }}
+                    autoFocus={false}
+                // placeholderTextColor="tomato"
                 />
                 <View>
                     <Text style={{ textAlign: "center", fontSize: 10, fontWeight: "bold" }}>VEG</Text>
-                    <Text style={{ textAlign: "center", fontSize: 10 }} >MOOD</Text>
-                    <Switch value={true} color="green" />
+                    <Text style={{ textAlign: "center", fontSize: 10, marginTop: -2 }} >MOOD</Text>
+                    <Switch value={vegMode} onChange={onModeChange} color={vegMode ? "green" : "white"} style={{ marginTop: -2 }} />
                 </View>
             </View>
 

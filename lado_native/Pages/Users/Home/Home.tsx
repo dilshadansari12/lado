@@ -1,23 +1,327 @@
-import React from "react"
+import React, { useState } from "react"
 import { Text } from "@react-navigation/elements"
-import { Button, ScrollView, StyleSheet, View } from "react-native";
+import { Button, Dimensions, FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { colorSchema } from "../../Helper";
 import HomeHeader from "./HomeHeader";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { StatusBar } from "react-native";
+import { Divider } from "@rneui/base";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
+import { useSharedValue } from "react-native-reanimated";
+import ItemCard from "../../../Componenet/ItemCard";
+
+const listOFCategory = [
+    {
+        id: 0,
+        "name": "All",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "all",
+        "sub_category": "all"
+    },
+    {
+        id: 1,
+        "name": "Biryani",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Non-Veg",
+        "sub_category": "Rice"
+    },
+    {
+        id: 2,
+        "name": "Pizza",
+        "image_url": require("../../../assets/items/pizza.jpg"),
+        "category": "Fast Food",
+        "sub_category": "Italian"
+    },
+    {
+        id: 3,
+        "name": "Paneer Butter Masala",
+        "image_url": require("../../../assets/items/paneer.png"),
+        "category": "Veg",
+        "sub_category": "Curry"
+    },
+    {
+        id: 4,
+        "name": "Burger",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Fast Food",
+        "sub_category": "American"
+    },
+    {
+        id: 5,
+        "name": "Noodles",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Asian",
+        "sub_category": "Chinese"
+    },
+    {
+        id: 6,
+        "name": "Cake",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Dessert",
+        "sub_category": "Bakery"
+    },
+    {
+        id: 7,
+        "name": "Dinner Combo",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Meal",
+        "sub_category": "Indian"
+    },
+    {
+        id: 8,
+        "name": "Chicken Curry",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Non-Veg",
+        "sub_category": "Curry"
+    },
+    {
+        id: 9,
+        "name": "Sandwich",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Fast Food",
+        "sub_category": "Breakfast"
+    },
+    {
+        id: 10,
+        "name": "Pasta",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Fast Food",
+        "sub_category": "Italian"
+    },
+    {
+        id: 11,
+        "name": "Ice Cream",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Dessert",
+        "sub_category": "Frozen"
+    },
+    {
+        id: 12,
+        "name": "Dosa",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "South Indian",
+        "sub_category": "Breakfast"
+    },
+    {
+        id: 13,
+        "name": "Samosa",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Snack",
+        "sub_category": "Indian"
+    },
+    {
+        id: 14,
+        "name": "French Fries",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Snack",
+        "sub_category": "Fast Food"
+    },
+    {
+        id: 15,
+        "name": "Tandoori Chicken",
+        "image_url": require("../../../assets/items/biryani.png"),
+        "category": "Non-Veg",
+        "sub_category": "Grilled"
+    }
+];
+
+
+// show restrount on the shorting of number of order and rating : high rating show first 
+
+const listOFRestrount = [
+    {
+        id: 1,
+        createdAt: "",
+        modifyAt: "",
+        openStatus: true,
+        startAt: "",
+        closeAt: "",
+        restrountImage: "",
+        name: "Food House",
+        mode: "non-veg",
+        location: "ranka more near pitrol pump", // show only on the view of order restrount
+        restrountOffer: "Get 50% Off on every order",
+        restrountRating: "4.2",
+        distance: "1 Km", // calulcate dynamic on the time of render and carding time
+        averageDeliveryTime: "20 mins", // calculate on the backend on the gettting time
+        description: "", // show only at the view of restrount page
+        licenceNumber: "",
+        ownerName: "",
+        averageCookingTime: "",
+        homeBanner: [
+            { id: 1, url: require("../../../assets/restrount-welcome-img/biryani1.jpg") },
+            { id: 2, url: require("../../../assets/restrount-welcome-img/biryani2.jpg") },
+            { id: 3, url: require("../../../assets/restrount-welcome-img/biryani3.jpg") }
+        ],
+    },
+    {
+        id: 2,
+        createdAt: "",
+        modifyAt: "",
+        openStatus: true,
+        startAt: "",
+        closeAt: "",
+        restrountImage: "",
+        name: "Good Food Kitchen",
+        mode: "veg,non-veg",
+        location: "Chiniya More",
+        restrountOffer: "Get 10% Off on Selected order",
+        restrountRating: "3.5",
+        distance: "1.5Km", // calulcate dynamic on the time of render and carding time (bases of last location saved)
+        averageDeliveryTime: "20min", // calculate on the backend on the gettting time (bases of last location order)
+        description: "",
+        licenceNumber: "",
+        ownerName: "",
+        homeBanner: [
+            { id: 1, url: require("../../../assets/restrount-welcome-img/dalmakhni3.jpg") },
+            { id: 2, url: require("../../../assets/restrount-welcome-img/dalmakhni2.jpg") },
+            { id: 3, url: require("../../../assets/restrount-welcome-img/dalmakhni1.jpg") }
+        ],
+    },
+]
+
+const listOfItem = [
+    {
+        id: 1,
+        name: "Hayedrabadi biryani",
+        url: "Hayedrabadi.png",
+        price: 250,
+        itemRatling: 3.4, //calculate rating on daily bases in task
+        restrountId: 1,
+        mode: "non-veg",
+        offer: "Get 40% Off",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+    },
+    {
+        id: 2,
+        name: "Dal Makhni",
+        url: "dalMakhni.png",
+        price: 150,
+        itemRatling: 3.8, //calculate rating on daily bases in task
+        restrountId: 1,
+        mode: "veg",
+        offer: "Free Delivery",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+
+    },
+    {
+        id: 3,
+        name: "Egg Role",
+        url: "eggRole.png",
+        price: 100,
+        itemRatling: 4, //calculate rating on daily bases in task
+        restrountId: 1,
+        mode: "non-veg",
+        offer: "Free Delivery",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+    },
+    {
+        id: 4,
+        name: "Gobi Manchurian",
+        url: "GobiManchurian.png",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+        price: 150,
+        itemRatling: 4.2, //calculate rating on daily bases in task
+        restrountId: 2,
+        mode: "veg",
+        offer: "Free Delivery"
+
+    },
+    {
+        id: 5,
+        name: "Veg Biryani",
+        url: "vegBiryani.png",
+        price: 135,
+        itemRatling: 4.3, //calculate rating on daily bases in task
+        restrountId: 2,
+        mode: "veg",
+        offer: "Free Delivery",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+
+    },
+    {
+        id: 6,
+        name: "Chicken 65",
+        url: "chicken65.png",
+        price: 170,
+        itemRatling: 4.8, //calculate rating on daily bases in task
+        restrountId: 2,
+        mode: "non-veg",
+        offer: "no Offer",
+        desciption: " Lorem ipsum dolor sit amet",
+        createdAt: "",
+        modifyAt: "",
+        avilableStatus: true,
+    }
+]
 
 
 const Home = () => {
     const navigate = useNavigation();
+    const width = Dimensions.get("window").width;
+
+    const [vegMode, setVegMode] = useState<boolean>(false);
+    const [searchValue, setSearchValue] = useState<String | null>(null);
+    const [searchBusy, setSearchBusy] = useState<boolean>(false);
+    const [selectedCategory, setSelectedCatogory] = useState<Number>(0);
+
+    const onCategoryPress = (id: Number) => setSelectedCatogory(id);
+
+    const ref = React.useRef<ICarouselInstance>(null);
+    const progress = useSharedValue<number>(0);
+
 
     return (
         <View style={style.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#daebde" />
+            <StatusBar barStyle="light-content" backgroundColor="#FF574A" />
             <ScrollView>
-                <HomeHeader />
-            </ScrollView>
+                <HomeHeader
+                    vegMode={vegMode}
+                    setVegMode={setVegMode}
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    searchBusy={searchBusy}
+                />
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
+                    {listOFCategory.map((item) => {
+                        return (
+                            <TouchableOpacity onPress={() => onCategoryPress(item.id)} key={item.id}>
+                                <View style={{ height: 100, width: 100, borderRadius: 50, flex: 1, alignContent: "center", alignItems: "center" }} key={item.id}>
+                                    <Image source={item.image_url} height={undefined} width={undefined} style={{ width: 80, height: 80 }} />
+                                    <Text style={selectedCategory === item?.id ? { color: "tomato", textAlign: "center" } : { textAlign: "center", color: "gray" }}>{item.name}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </ScrollView>
+
+                {listOFRestrount && [...listOFRestrount, ...listOFRestrount, ...listOFRestrount, ...listOFRestrount, ...listOFRestrount].map((restrount) => {
+                    return (
+                        <ItemCard
+                            imageList={restrount.homeBanner}
+                            {...restrount}
+                        />
+                    )
+                })}
+
+            </ScrollView >
         </View >
     )
 }
