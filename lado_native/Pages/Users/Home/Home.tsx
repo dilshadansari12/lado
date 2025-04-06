@@ -15,7 +15,7 @@ import HomeHeader from "./HomeHeader";
 import { isEmpty, safeText, theme } from "../../helper";
 import LadoLoader from "../../../Componenet/LadoLoader";
 import { listOFCategory, finalListOfItem } from "./helper";
-import ItemCard, { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/ItemCard";
+import ItemCard, { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/HomeCard";
 
 const Home = () => {
     const listRef = useRef(null);
@@ -55,14 +55,6 @@ const Home = () => {
     return (
         <View style={style.container} renderToHardwareTextureAndroid={true}>
             <StatusBar barStyle="light-content" backgroundColor="#6A1B9A" />
-            {/* <HomeHeader
-                vegMode={vegMode}
-                setVegMode={setVegMode}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                searchBusy={searchBusy}
-            /> */}
-
             <FlashList
                 ref={listRef}
                 data={finalListOfItem}

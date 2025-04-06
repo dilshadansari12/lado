@@ -1,6 +1,7 @@
 import LottieView from "lottie-react-native";
 import React, { useEffect, useRef } from "react";
 import { View, Text, Animated, StyleSheet } from "react-native";
+import { theme } from "../Pages/helper";
 
 const LadoLoader = () => {
     const letters = ["L", "A", "D", "O"];
@@ -71,8 +72,10 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         marginHorizontal: 5,
-        color: "gray",
+        color: theme.background.dark,
     },
 });
 
 export default LadoLoader;
+
+// https://loading.io/
