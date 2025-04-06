@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
-import { Dimensions, Image, Text, View, StyleSheet } from "react-native"
+import { Dimensions, Image, Text, View, StyleSheet, Pressable, ActivityIndicator, Button } from "react-native"
 import { runOnJS, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { listOFCategory } from "../Pages/Users/Home/helper";
 
 const vegCss = { backgroundColor: "green", paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", marginRight: 5, borderRadius: 5 };
 const nonVegCss = { backgroundColor: "tomato", paddingLeft: 10, paddingRight: 10, color: "white", paddingTop: 5, paddingBottom: 5, borderRadius: 5 };
@@ -21,8 +22,9 @@ const ModeBage = ({ mode }: any) => {
 }
 // restaurants
 const ItemCard = React.memo(({ ...props }: any) => {
+
     const { name, mode, location, restrountOffer, restrountRating, distance, averageDeliveryTime, description, homeBanner, key } = props?.item;
-    const imageList: [] = homeBanner;
+    const imageList: [] = useMemo(() => homeBanner || [], [homeBanner]);
 
     const width = Dimensions.get("window").width;
 
@@ -42,7 +44,7 @@ const ItemCard = React.memo(({ ...props }: any) => {
     }, []);
 
     return (
-        <View style={[style.container, { width: width - 20 }]} key={key}>
+        <View style={[style.container, { width: width - 20 }]} >
             <View style={{ height: 250 }}>
                 <Carousel
                     ref={ref}
@@ -177,8 +179,7 @@ const style = StyleSheet.create({
         paddingRight: 10
     }
 
-})
-
+});
 
 export const FooterOfList = () => {
     return (
@@ -187,5 +188,39 @@ export const FooterOfList = () => {
             <Text style={{ fontSize: 22, color: "gray", lineHeight: 30 }} >Suggest something & we'll look in to it.</Text>
             <Text style={{ fontSize: 22, color: "gray", textAlign: "center" }} >lado@gmail.com 😒</Text>
         </View>
+    )
+};
+
+export const CategoryFilter = ({ id, onCategoryRemove }: any) => {
+    const find = listOFCategory.find(e => e.id == id);
+
+    return (
+        <View style={{ marginLeft: 8, marginRight: 3, marginBottom: 10, borderWidth: 0.3, minHeight: 30, flex: 1, flexDirection: "row", justifyContent: "space-around", alignSelf: "center", padding: 5, borderRadius: 5 }}>
+            <Text>{find?.name}</Text>
+            <Ionicons name="close-circle" color={"tomato"} size={20} onPress={() => onCategoryRemove(find?.id)} style={{ marginLeft: 4, marginRight: 4 }} />
+        </View>
+    )
+};
+
+export const Category = React.memo(({ item, onCategoryAdd, selectedCategory }: any) => {
+    return (
+        <Pressable onPress={() => onCategoryAdd(item.id)} style={{ height: 80, width: 70, borderRadius: 50, flex: 1, alignContent: "center", alignItems: "center", borderWidth: 0, marginTop: 10, marginBottom: 10 }} key={item.id}>
+            <Image source={item.image_url} height={undefined} width={undefined} resizeMethod="resize" style={{ width: 60, height: 60 }} />
+            <Text style={selectedCategory.includes(item?.id) ? { color: "tomato", textAlign: "center" } : { textAlign: "center", color: "gray" }}>{item.name}</Text>
+        </Pressable>
+    )
+});
+
+export const CardLoader = React.memo(() => {
+    return <ActivityIndicator size={30} color={"gray"} style={{ marginBottom: 50 }} />
+})
+
+export const GoToTop = ({ ref }: any) => {
+    const onGoToTop = () => (ref as any).current?.scrollToOffset({ offset: 0, animated: true });
+
+    return (
+        <Pressable onPress={onGoToTop} style={{ width: 120, borderWidth: 2, position: "absolute", flex: 1, justifyContent: "center", alignItems: "center", bottom: 5, alignSelf: "center", backgroundColor: "black", padding: 10, borderRadius: 100 }} >
+            <Text style={{ fontSize: 12, color: "white" }}>Back to top <Ionicons name="arrow-up" color={"white"} /></Text>
+        </Pressable >
     )
 }

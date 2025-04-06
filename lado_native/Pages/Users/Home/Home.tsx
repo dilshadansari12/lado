@@ -1,70 +1,122 @@
-import React, { useState } from "react"
-import { Text } from "@react-navigation/elements"
+import React, { useRef, useState } from "react"
+import { FlashList } from "@shopify/flash-list";
 import { useNavigation } from "@react-navigation/native";
 
 import {
     Dimensions,
-    Image,
-    ScrollView,
     StyleSheet,
-    TouchableOpacity,
     View,
     StatusBar,
-    FlatList
+    FlatList,
+    Pressable
 } from "react-native";
 
 import HomeHeader from "./HomeHeader";
-import { colorSchema } from "../../Helper";
-
-import ItemCard, { FooterOfList } from "../../../Componenet/ItemCard";
-
-import { listOFCategory, listOFRestrount, listOfItem, finalListOfItem } from "./helper";
-
-let Key = 1;
+import { isEmpty, safeText, theme } from "../../helper";
+import LadoLoader from "../../../Componenet/LadoLoader";
+import { listOFCategory, finalListOfItem } from "./helper";
+import ItemCard, { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/ItemCard";
 
 const Home = () => {
+    const listRef = useRef(null);
+
     const navigate = useNavigation();
     const width = Dimensions.get("window").width;
+    const height = Dimensions.get("window").height;
 
     const [vegMode, setVegMode] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<String | null>(null);
     const [searchBusy, setSearchBusy] = useState<boolean>(false);
-    const [selectedCategory, setSelectedCatogory] = useState<Number>(0);
+    const [selectedCategory, setSelectedCatogory] = useState<any>([]);
+    const [isRenderingLag, setIsRenderingLag] = useState<boolean>(false);
+    const [showGoToTop, setShowGoToTop] = useState<boolean>(false);
 
-    const onCategoryPress = (id: Number) => setSelectedCatogory(id);
+    const onCategoryAdd = (id: any) => setSelectedCatogory((prev: any) => {
+        if (!prev.includes(id)) {
+            return [...prev, id];
+        } else {
+            return [...prev];
+        }
+    });
+
+    const onCategoryRemove = (id: any) => setSelectedCatogory((prev: any) => {
+        const newList = prev.filter(e => e != id);
+        return [...newList];
+    })
+
+    const onRestaurantCardClick = (id: Number) => (navigate as any).navigate("orderView", { restaurantId: id });
+
+    let loading = false;
+
+    if (loading) {
+        return <LadoLoader /> //TODO: hide footer when loading is true
+    }
 
     return (
-        <View style={style.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#FF574A" />
-            <ScrollView>
-                <HomeHeader
-                    vegMode={vegMode}
-                    setVegMode={setVegMode}
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
-                    searchBusy={searchBusy}
-                />
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
-                    {listOFCategory.map((item) => {
-                        return (
-                            <TouchableOpacity onPress={() => onCategoryPress(item.id)} key={`${item.id}${item.name}`}>
-                                <View style={{ height: 100, width: 100, borderRadius: 50, flex: 1, alignContent: "center", alignItems: "center" }} key={item.id}>
-                                    <Image source={item.image_url} height={undefined} width={undefined} style={{ width: 80, height: 80 }} />
-                                    <Text style={selectedCategory === item?.id ? { color: "tomato", textAlign: "center" } : { textAlign: "center", color: "gray" }}>{item.name}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })}
-                </ScrollView>
-                <FlatList
-                    data={finalListOfItem}
-                    renderItem={(props) => <ItemCard {...props} key={`ABCD${Key++}`} />}
-                    keyExtractor={(item) => item.id.toString()}
-                    ListFooterComponent={FooterOfList}
-                    scrollEnabled={true}
-                />
-            </ScrollView >
-        </View >
+        <View style={style.container} renderToHardwareTextureAndroid={true}>
+            <StatusBar barStyle="light-content" backgroundColor="#6A1B9A" />
+            {/* <HomeHeader
+                vegMode={vegMode}
+                setVegMode={setVegMode}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchBusy={searchBusy}
+            /> */}
+
+            <FlashList
+                ref={listRef}
+                data={finalListOfItem}
+                renderItem={(props) => <Pressable onPress={() => onRestaurantCardClick(props?.item?.id)}><ItemCard {...props} /></Pressable>}
+                keyExtractor={(item, index) => index.toString()} //TODO:change by itemId 
+                ListHeaderComponent={() => {
+                    return (
+                        <View>
+                            <HomeHeader
+                                vegMode={vegMode}
+                                setVegMode={setVegMode}
+                                searchValue={searchValue}
+                                setSearchValue={setSearchValue}
+                                searchBusy={searchBusy}
+                            />
+                            <FlatList
+                                data={listOFCategory}
+                                horizontal
+                                renderItem={({ item }) => <Category item={item} onCategoryAdd={onCategoryAdd} selectedCategory={selectedCategory} />}
+                                extraData={selectedCategory}
+                                keyExtractor={(item, index) => index?.toString()}
+                                scrollEnabled={true}
+                            />
+
+                            <FlatList
+                                data={selectedCategory}
+                                horizontal
+                                renderItem={({ item }) => <CategoryFilter id={item} onCategoryRemove={onCategoryRemove} />}
+                                keyExtractor={(item, index) => index.toString()}
+                                scrollEnabled={true}
+                            />
+                        </View>
+                    )
+                }}
+                ListFooterComponent={FooterOfList}
+                scrollEnabled={true}
+                estimatedItemSize={1200}
+                onScrollBeginDrag={() => console.log("started scrolling")}//TODO: handle in context api and hide bottom when user scrolling 
+                onMomentumScrollEnd={() => console.log("end scrolling")}
+                onScroll={(event) => {
+                    const offsetY = event.nativeEvent.contentOffset.y;
+                    setShowGoToTop(offsetY > height ? true : false);
+                }}
+                onBlankArea={({ blankArea }) => {
+                    if (blankArea > 1) {
+                        setIsRenderingLag(true);
+                    } else {
+                        setIsRenderingLag(false);
+                    }
+                }}
+            />
+            {isRenderingLag && <CardLoader />}
+            {!isRenderingLag && showGoToTop && <GoToTop ref={listRef} />}
+        </View>
     )
 }
 
@@ -72,7 +124,7 @@ export default Home;
 
 const style = StyleSheet.create({
     container: {
-        backgroundColor: colorSchema?.background,
+        backgroundColor: theme.background.white,
         flex: 1,
         justifyContent: "center",
         alignContent: "center",

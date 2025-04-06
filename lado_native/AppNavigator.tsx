@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -12,8 +12,7 @@ import Payemnt from './Pages/Users/Cart/Payment';
 import Tracking from './Pages/Users/Tracking/Tracking';
 import Account from './Pages/Account/Account';
 
-import Ionicons from '@react-native-vector-icons/ionicons';
-import HomeHeader from './Pages/Users/Home/HomeHeader';
+import { theme } from './Pages/helper';
 
 const Stack = createNativeStackNavigator();
 const BottomTabNavigation = createBottomTabNavigator();
@@ -30,7 +29,7 @@ const NavigatorIcon = ({ route, focused, color, size }:
 
     let iconName = "home";
     switch (route?.name) {
-        case "home":
+        case "homebotoom":
             iconName = focused ? "planet" : "planet-outline";
             break;
         case "cart":
@@ -54,12 +53,22 @@ const AllTabs = () => {
         <BottomTabNavigation.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: (props) => <NavigatorIcon {...props} route={route} />,
-                tabBarActiveTintColor: 'tomato',
-                // tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: theme.tabIconColor,
+                tabBarStyle: { display: false ? 'none' : 'flex' },
+                tabBarVisibilityAnimationConfig: {
+                    show: {
+                        animation: 'timing',
+                        config: { duration: 1000 },
+                    },
+                    hide: {
+                        animation: 'timing',
+                        config: { duration: 1000 },
+                    },
+                },
             })}
         >
             <BottomTabNavigation.Screen
-                name="home"
+                name="homebotoom"
                 component={Home}
                 options={({ navigation }) => ({ title: "Home", header: () => null, headerShadowVisible: false })}
             />
