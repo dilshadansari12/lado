@@ -133,14 +133,14 @@ export const CategoryFilter = ({ id, onCategoryRemove }: any) => {
     )
 };
 
-export const Category = React.memo(({ item, onCategoryAdd, selectedCategory }: any) => {
+export const Category = ({ item, onCategoryAdd, selectedCategory }: any) => {
     return (
         <Pressable onPress={() => onCategoryAdd(item.id)} style={style.CategoryContainer} key={item.id}>
             <Image source={item.image_url} height={undefined} width={undefined} resizeMethod="resize" style={{ width: 60, height: 60 }} />
             <Text style={selectedCategory.includes(item?.id) ? { color: theme.background.dark, textAlign: "center", fontFamily: theme.font.heading.fontFamily } : { textAlign: "center", color: "gray", fontFamily: theme.font.body.fontFamily }}>{safeText(item.name, 15)?.split(" ").join("\n")}</Text>
         </Pressable>
     )
-});
+};
 
 export const CardLoader = React.memo(() => {
     return <ActivityIndicator size={30} color={theme.background.dark} style={{ marginBottom: 50 }} />

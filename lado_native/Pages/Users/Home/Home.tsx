@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import HomeHeader from "./HomeHeader";
-import { isEmpty, safeText, theme } from "../../helper";
+import { theme } from "../../helper";
 import LadoLoader from "../../../Componenet/LadoLoader";
 import { listOFCategory, finalListOfItem } from "./helper";
 import ItemCard, { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/HomeCard";
@@ -21,7 +21,7 @@ const Home = () => {
     const listRef = useRef(null);
 
     const navigate = useNavigation();
-    const width = Dimensions.get("window").width;
+    // const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
 
     const [vegMode, setVegMode] = useState<boolean>(false);
@@ -45,8 +45,42 @@ const Home = () => {
     })
 
     const onRestaurantCardClick = (id: Number) => (navigate as any).navigate("orderView", { restaurantId: id });
+    const onSearchChange = (e: any) => setSearchValue(e);
 
     let loading = false;
+
+    const ListHeaderComponent = React.useMemo(() => {
+        return (
+            <View>
+                <HomeHeader
+                    vegMode={vegMode}
+                    setVegMode={setVegMode}
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    searchBusy={searchBusy}
+                    onSearchChange={onSearchChange}
+                />
+
+                <FlatList
+                    data={listOFCategory}
+                    horizontal
+                    renderItem={({ item }) => <Category item={item} onCategoryAdd={onCategoryAdd} selectedCategory={selectedCategory} />}
+                    extraData={selectedCategory}
+                    keyExtractor={(item, index) => index?.toString()}
+                    scrollEnabled={true}
+                />
+
+                <FlatList
+                    data={selectedCategory}
+                    horizontal
+                    renderItem={({ item }) => <CategoryFilter id={item} onCategoryRemove={onCategoryRemove} />}
+                    keyExtractor={(item, index) => index.toString()}
+                    scrollEnabled={true}
+                />
+            </View>
+        )
+    }, [searchValue, setSearchValue, vegMode, setVegMode, searchBusy, selectedCategory]);
+
 
     if (loading) {
         return <LadoLoader /> //TODO: hide footer when loading is true
@@ -60,39 +94,11 @@ const Home = () => {
                 data={finalListOfItem}
                 renderItem={(props) => <Pressable onPress={() => onRestaurantCardClick(props?.item?.id)}><ItemCard {...props} /></Pressable>}
                 keyExtractor={(item, index) => index.toString()} //TODO:change by itemId 
-                ListHeaderComponent={() => {
-                    return (
-                        <View>
-                            <HomeHeader
-                                vegMode={vegMode}
-                                setVegMode={setVegMode}
-                                searchValue={searchValue}
-                                setSearchValue={setSearchValue}
-                                searchBusy={searchBusy}
-                            />
-                            <FlatList
-                                data={listOFCategory}
-                                horizontal
-                                renderItem={({ item }) => <Category item={item} onCategoryAdd={onCategoryAdd} selectedCategory={selectedCategory} />}
-                                extraData={selectedCategory}
-                                keyExtractor={(item, index) => index?.toString()}
-                                scrollEnabled={true}
-                            />
-
-                            <FlatList
-                                data={selectedCategory}
-                                horizontal
-                                renderItem={({ item }) => <CategoryFilter id={item} onCategoryRemove={onCategoryRemove} />}
-                                keyExtractor={(item, index) => index.toString()}
-                                scrollEnabled={true}
-                            />
-                        </View>
-                    )
-                }}
+                ListHeaderComponent={ListHeaderComponent}
                 ListFooterComponent={FooterOfList}
                 scrollEnabled={true}
                 estimatedItemSize={1200}
-                onScrollBeginDrag={() => console.log("started scrolling")}//TODO: handle in context api and hide bottom when user scrolling 
+                onScrollBeginDrag={() => console.log("started scrolling")}//TODO: handle in context api and hide bottom when user scrolling
                 onMomentumScrollEnd={() => console.log("end scrolling")}
                 onScroll={(event) => {
                     const offsetY = event.nativeEvent.contentOffset.y;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Dimensions, View, Image, StyleSheet } from "react-native";
 import { color, SearchBar, Switch, Text } from "@rneui/base";
@@ -11,7 +11,7 @@ import { colorSchema, safeText, theme } from "../../helper";
 import { useNavigation } from "@react-navigation/native";
 
 
-const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBusy }: any) => {
+const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBusy, onSearchChange }: any) => {
 
     const width = Dimensions.get("window").width;
     const navigation = useNavigation();
@@ -42,11 +42,13 @@ const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBu
         { id: 8, url: require("../../../assets/foodbg8.png") }
     ]
 
-    const onSearchChange = (e: any) => setSearchValue(e);
+    // const onSearchChange = (e: any) => {
+    //     // setSearchValue(e)
+    // };
     const onModeChange = () => setVegMode(!vegMode);
     const onClearSearch = () => setSearchValue('');
     const onUserPress = () => (navigation as any).navigate("profile");
-
+    
     return (
         <View style={style.container}>
 
