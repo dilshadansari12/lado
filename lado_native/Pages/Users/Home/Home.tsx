@@ -15,7 +15,9 @@ import HomeHeader from "./HomeHeader";
 import { theme } from "../../helper";
 import LadoLoader from "../../../Componenet/LadoLoader";
 import { listOFCategory, finalListOfItem } from "./helper";
-import ItemCard, { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/HomeCard";
+import { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/ComponentHelper";
+import RestrauntCard from "./RestrauntCard";
+
 
 const Home = () => {
     const listRef = useRef(null);
@@ -44,7 +46,7 @@ const Home = () => {
         return [...newList];
     })
 
-    const onRestaurantCardClick = (id: Number) => (navigate as any).navigate("orderView", { restaurantId: id });
+    const onRestrauntCardClick = (id: Number) => (navigate as any).navigate("restrauntView", { restrauntId: id });
     const onSearchChange = (e: any) => setSearchValue(e);
 
     let loading = false;
@@ -92,7 +94,7 @@ const Home = () => {
             <FlashList
                 ref={listRef}
                 data={finalListOfItem}
-                renderItem={(props) => <Pressable onPress={() => onRestaurantCardClick(props?.item?.id)}><ItemCard {...props} /></Pressable>}
+                renderItem={(props) => <Pressable onPress={() => onRestrauntCardClick(props?.item?.id)}><RestrauntCard {...props} /></Pressable>}
                 keyExtractor={(item, index) => index.toString()} //TODO:change by itemId 
                 ListHeaderComponent={ListHeaderComponent}
                 ListFooterComponent={FooterOfList}

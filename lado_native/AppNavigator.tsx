@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './Pages/Users/Home/Home';
-import OrderView from './Pages/Users/Home/OrderView';
 import Cart from './Pages/Users/Cart/Cart';
 import Address from './Pages/Users/Cart/Address';
 import Payemnt from './Pages/Users/Cart/Payment';
@@ -13,6 +12,7 @@ import Tracking from './Pages/Users/Tracking/Tracking';
 import Account from './Pages/Account/Account';
 
 import { theme } from './Pages/helper';
+import RestrauntView from './Pages/Users/Home/RestrauntView';
 
 const Stack = createNativeStackNavigator();
 const BottomTabNavigation = createBottomTabNavigator();
@@ -73,7 +73,7 @@ const AllTabs = () => {
                 options={({ navigation }) => ({ title: "Home", header: () => null, headerShadowVisible: false })}
             />
             <BottomTabNavigation.Screen name="tracking" component={Tracking} options={{ title: "Tracking" }} />
-            <BottomTabNavigation.Screen name="cart" component={Cart} options={{ title: "Cart", tabBarBadge: 5 }} />
+            {/* <BottomTabNavigation.Screen name="cart" component={Cart} options={{ title: "Cart", tabBarBadge: 5 }} /> */}
             <BottomTabNavigation.Screen name='profile' component={Account} options={{ title: "Profile" }} />
         </BottomTabNavigation.Navigator>
     )
@@ -87,9 +87,10 @@ const AppNavigator = () => {
             <Stack.Screen name='home' component={AllTabs} options={{ headerShown: false }} />
 
             {/* Hide the bottom */}
-            <Stack.Screen name="orderView" component={OrderView} options={({ navigation }) => ({ header: () => null })} />
+            <Stack.Screen name="restrauntView" component={RestrauntView} options={({ navigation }) => ({ header: () => null })} />
             <Stack.Screen name="address" component={Address} />
             <Stack.Screen name="payment" component={Payemnt} />
+            <Stack.Screen name="cart" component={Cart} />
         </Stack.Navigator>
     );
 };

@@ -48,7 +48,7 @@ const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBu
     const onModeChange = () => setVegMode(!vegMode);
     const onClearSearch = () => setSearchValue('');
     const onUserPress = () => (navigation as any).navigate("profile");
-    
+
     return (
         <View style={style.container}>
 

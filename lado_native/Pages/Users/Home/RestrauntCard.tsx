@@ -1,28 +1,14 @@
+import { Image } from "@rneui/base";
 import React, { useCallback, useMemo } from "react";
-
-import { Dimensions, Image, Text, View, StyleSheet, Pressable, ActivityIndicator, Button } from "react-native"
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
-
+import { safeText, theme } from "../../helper";
+import { ModeBage } from "../../../Componenet/ComponentHelper";
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { listOFCategory } from "../Pages/Users/Home/helper";
-import { safeText, theme } from "../Pages/helper";
 
-const vegCss = { backgroundColor: "green", paddingLeft: 10, fontFamily: theme.font.body.fontFamily, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", marginRight: 5, borderRadius: 5, height: 30 };
-const nonVegCss = { backgroundColor: theme.background.dark, fontFamily: theme.font.body.fontFamily, paddingLeft: 10, paddingRight: 10, color: "white", paddingTop: 5, paddingBottom: 5, borderRadius: 5, height: 30 };
 
-const ModeBage = ({ mode }: any) => {
-    if (mode === null || mode === '' || mode === undefined) return <Text>N/A</Text>
-    const modeList = mode?.split(",")?.filter(e => e != '');
-
-    return (
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-            {modeList.map((e: any, idx: number) => <Text key={idx} style={e === "veg" ? vegCss : nonVegCss} >{e}</Text>)}
-        </View >
-    )
-}
-// restaurants
-const HomeCard = React.memo(({ ...props }: any) => {
+const RestrauntCard = React.memo(({ ...props }: any) => {
 
     const { name, mode, location, restrountOffer: restaurantOffer, restrountRating: restaurantRating, distance, averageDeliveryTime, description, homeBanner, key } = props?.item;
     const imageList: [] = useMemo(() => homeBanner || [], [homeBanner]);
@@ -107,54 +93,6 @@ const HomeCard = React.memo(({ ...props }: any) => {
         </View >
     )
 });
-
-export default HomeCard;
-
-
-
-export const FooterOfList = () => {
-    return (
-        <View style={{ alignSelf: "center", marginTop: 10, marginBottom: 10 }}>
-            <Text style={{ fontSize: 22, color: "gray", lineHeight: 30 }} >didn't find what you are looking for</Text>
-            <Text style={{ fontSize: 22, color: "gray", lineHeight: 30 }} >Suggest something & we'll look in to it.</Text>
-            <Text style={{ fontSize: 22, color: "gray", textAlign: "center" }} >lado@gmail.com 😒</Text>
-        </View>
-    )
-};
-
-export const CategoryFilter = ({ id, onCategoryRemove }: any) => {
-    const find = listOFCategory.find(e => e.id == id);
-
-    return (
-        <View style={style.categoryFilterContainer}>
-            <Text style={{ fontFamily: theme.font.body.fontFamily }} >{find?.name}</Text>
-            <Ionicons name="close-circle" color={theme.tabIconColor} size={20} onPress={() => onCategoryRemove(find?.id)} style={{ marginLeft: 4, marginRight: 4 }} />
-        </View>
-    )
-};
-
-export const Category = ({ item, onCategoryAdd, selectedCategory }: any) => {
-    return (
-        <Pressable onPress={() => onCategoryAdd(item.id)} style={style.CategoryContainer} key={item.id}>
-            <Image source={item.image_url} height={undefined} width={undefined} resizeMethod="resize" style={{ width: 60, height: 60 }} />
-            <Text style={selectedCategory.includes(item?.id) ? { color: theme.background.dark, textAlign: "center", fontFamily: theme.font.heading.fontFamily } : { textAlign: "center", color: "gray", fontFamily: theme.font.body.fontFamily }}>{safeText(item.name, 15)?.split(" ").join("\n")}</Text>
-        </Pressable>
-    )
-};
-
-export const CardLoader = React.memo(() => {
-    return <ActivityIndicator size={30} color={theme.background.dark} style={{ marginBottom: 50 }} />
-})
-
-export const GoToTop = ({ ref }: any) => {
-    const onGoToTop = () => (ref as any).current?.scrollToOffset({ offset: 0, animated: true });
-
-    return (
-        <Pressable onPress={onGoToTop} style={{ width: 120, position: "absolute", flex: 1, justifyContent: "center", alignItems: "center", bottom: 5, alignSelf: "center", backgroundColor: theme.background.dark, padding: 10, borderRadius: 100 }} >
-            <Text style={{ fontSize: 12, color: "white" }}>Back to top <Ionicons name="arrow-up" color={"white"} /></Text>
-        </Pressable >
-    )
-}
 
 
 // styling
@@ -258,3 +196,5 @@ const style = StyleSheet.create({
         borderRadius: 5
     }
 });
+
+export default RestrauntCard;
