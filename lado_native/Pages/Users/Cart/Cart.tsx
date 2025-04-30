@@ -1,8 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
-import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native"
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View, Button } from "react-native"
 
 //library
-import { Button, makeStyles } from "@rneui/base";
 import LottieView from "lottie-react-native";
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useNavigation } from "@react-navigation/native";
@@ -32,11 +31,20 @@ const Cart = ({ route }: any) => {
     }
 
     const avgDeliveryTime = "40-45 mins";
+
     const onInfoClick = (type: string) => {
+        console.log("hii" + " " + " - " + type);
         setBottomSheetType(type);
         bottomSheetRef.current?.expand();
 
     }
+
+    const onPlaceOrderPress = () => {
+        console.log("hii");
+
+    }
+
+
     // callbacks
     const handleSheetChanges = useCallback((index: number) => {
         console.log('handleSheetChanges', index);
@@ -114,44 +122,42 @@ const Cart = ({ route }: any) => {
                             <Ionicons name="home-outline" size={18} color={theme.background.pimary} />
                             <Text style={[styles.textGray, { marginLeft: 10 }]}>Delivery Location</Text>
                         </View>
-                        <View style={styles.rowBetween}>
+
+                        <Pressable onPress={() => onInfoClick("location")} style={[styles.rowBetween, { zIndex: 9999 }]}>
                             <Text style={[styles.textSmall, { marginLeft: 10 }]}>{safeText(location, 50)}</Text>
-                            <Pressable onPress={() => onInfoClick("location")}>
-                                <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
-                            </Pressable>
-                        </View>
+                            <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
+                        </Pressable>
                     </View>
 
-                    <View style={styles.dashedRowBetween}>
+                    <Pressable onPress={() => onInfoClick("information")} style={styles.dashedRowBetween}>
                         <View style={styles.row}>
                             <Ionicons name="call-outline" size={18} color={theme.background.pimary} />
                             <Text style={[styles.textGray, { marginLeft: 10 }]}>
                                 {name} - {phoneNo}
                             </Text>
                         </View>
-                        <Pressable onPress={() => onInfoClick("information")}>
-                            <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
-                        </Pressable>
-                    </View>
+                        <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
+                    </Pressable>
 
-                    <View style={styles.dashedRowBetween}>
-                        <Pressable onPress={() => onInfoClick("bill")}>
-                            <View style={styles.row}>
-                                <Ionicons name="receipt-outline" size={18} color={theme.background.pimary} />
-                                <Text style={[styles.textGray, { marginLeft: 10 }]}>
-                                    Total Bill - <Text style={{ textDecorationLine: "line-through" }}>₹1200</Text> ₹1000
-                                </Text>
-                            </View>
-                            <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
-                        </Pressable>
-                    </View>
+                    <Pressable onPress={() => onInfoClick("bill")} style={styles.dashedRowBetween} >
+                        <View style={styles.row}>
+                            <Ionicons name="receipt-outline" size={18} color={theme.background.pimary} />
+                            <Text style={[styles.textGray, { marginLeft: 10 }]}>
+                                Total Bill - <Text style={{ textDecorationLine: "line-through" }}>₹1200</Text> ₹1000
+                            </Text>
+                        </View>
+                        <Ionicons name="chevron-forward-outline" size={18} color={"#696969"} />
+                    </Pressable>
+
                 </View>
 
-                <Button
-                    title={"Place Order"}
-                    buttonStyle={styles.placeOrderButton}
-                    onPress={() => onInfoClick("location")}
-                />
+                <View style={{ marginBottom: 10 }}>
+                    <Button
+                        title={"Place Order"}
+                        onPress={onPlaceOrderPress}
+                        color={theme.background.pimary}
+                    />
+                </View>
             </ScrollView>
 
             <CardBottomSheet
