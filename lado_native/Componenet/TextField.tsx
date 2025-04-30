@@ -102,7 +102,7 @@ const TextField: React.FC<Props> = (props) => {
                         ]}
                     >
                         {label}
-                        {errorText ? '*' : ''}
+                        {errorText ? '* ' : ''}
                     </Text>
                 </Animated.View>
             </TouchableWithoutFeedback>

@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { Text, ToastAndroid, View } from "react-native";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetFooter, BottomSheetView } from "@gorhom/bottom-sheet";
-import { FloatingLabelInput } from "react-native-floating-label-input";
 import TextField from "./TextField";
 import { isEmpty, theme } from "../Pages/helper";
 import { Button } from "@rneui/base";
@@ -69,8 +68,7 @@ const CardBottomSheet = ({ bottomSheetRef, handleSheetChanges, onClose, type }: 
             ToastAndroid.show("some thing went wrong", 1000)
         }
 
-        console.log("form save");
-
+        onClose();
     }
 
     return (
@@ -91,7 +89,7 @@ const CardBottomSheet = ({ bottomSheetRef, handleSheetChanges, onClose, type }: 
                     <View style={{ marginTop: 30, width: "97%", borderRadius: 5, marginBottom: 10 }}>
                         <TextField
                             value={formText.name}
-                            label="Name"
+                            label="Receiver's name"
                             errorText={error.name}
                             onChangeText={(value) => setFromText((prev) => ({ ...prev, name: value }))}
                             style={{ width: "90%", alignSelf: "center", marginTop: 10, fontFamily: theme.font.body.fontFamily }}
@@ -99,11 +97,17 @@ const CardBottomSheet = ({ bottomSheetRef, handleSheetChanges, onClose, type }: 
 
                         <TextField
                             value={formText.phoneNumber}
-                            label="Phone Number"
+                            label="Receiver's mobile number"
                             errorText={error.phoneNumber}
                             onChangeText={(value) => setFromText((prev) => ({ ...prev, phoneNumber: value }))}
                             style={{ width: "90%", alignSelf: "center", marginTop: 10 }}
                         />
+                    </View>
+                }
+
+                {type === "bill" &&
+                    <View style={{ marginTop: 30, width: "97%", borderRadius: 5, marginBottom: 10 }}>
+                        <Text>{type}</Text>
                     </View>
                 }
 
