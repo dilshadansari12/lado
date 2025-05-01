@@ -9,10 +9,10 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 
 //local
 import { safeText, theme } from "../../helper";
-import SnacksCard from "../../../Componenet/SnacksCard";
+import SnacksCard from "../../../Component/SnacksCard";
 import { listOfItem, snacksAndDrinks, user } from "../Home/helper";
-import SelectedItemCard from "../../../Componenet/SelectedItemCard";
-import CardBottomSheet from "../../../Componenet/CardBottomSheet";
+import SelectedItemCard from "../../../Component/SelectedItemCard";
+import CardBottomSheet from "../../../Component/CardBottomSheet";
 
 
 const Cart = ({ route }: any) => {

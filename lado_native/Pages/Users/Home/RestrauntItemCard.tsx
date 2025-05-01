@@ -7,7 +7,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 
 const RestrauntItemCard = (props: any) => {
     const { setTotalItem, totalItem } = props;
-    const { name, url, price, ladoPrice, itemRatling, mode, offer, description, totalOrderCount } = props?.item;
+    const { name, url, price, ladoPrice, itemRating, mode, offer, description, totalOrderCount } = props?.item;
 
     // const [totalItem, setTotalItem] = React.useState(0);
     const [selectedItem, setSelectedItem] = useState<object>({});
@@ -15,9 +15,6 @@ const RestrauntItemCard = (props: any) => {
     const { width, height } = useWindowDimensions();
     const finalCardWidth = width - 10;
     const item = listOfItem[0];
-
-
-
 
     const onGroupPress = (action: number) => {
         const isAdd = action == 0;
@@ -62,7 +59,7 @@ const RestrauntItemCard = (props: any) => {
                             paddingRight: 10,
                             height: 28
                         }}>
-                            <Text style={{ color: "white", fontFamily: theme.font.body.fontFamily }}>{safeText(`${itemRatling}`)}</Text>
+                            <Text style={{ color: "white", fontFamily: theme.font.body.fontFamily }}>{safeText(`${itemRating}`)}</Text>
                             <Ionicons name="star" size={10} color={"white"} style={{ marginLeft: 2, marginBottom: 2 }} />
                         </View>
                         <Text style={{ marginLeft: 10, borderWidth: 0, borderColor: "gray", paddingLeft: 10, paddingRight: 10, paddingTop: 3 }}>{totalOrderCount}</Text>

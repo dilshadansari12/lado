@@ -11,7 +11,7 @@ import { colorSchema, safeText, theme } from "../../helper";
 import { useNavigation } from "@react-navigation/native";
 
 
-const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBusy, onSearchChange }: any) => {
+const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBusy, onSubmite }: any) => {
 
     const width = Dimensions.get("window").width;
     const navigation = useNavigation();
@@ -42,12 +42,12 @@ const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBu
         { id: 8, url: require("../../../assets/foodbg8.png") }
     ]
 
-    // const onSearchChange = (e: any) => {
-    //     // setSearchValue(e)
-    // };
     const onModeChange = () => setVegMode(!vegMode);
     const onClearSearch = () => setSearchValue('');
     const onUserPress = () => (navigation as any).navigate("profile");
+    const onSearchChange = (e: any) => setSearchValue(e);
+
+
 
     return (
         <View style={style.container}>
@@ -76,6 +76,7 @@ const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBu
                     inputStyle={{ color: theme.textInput }}
                     style={{ fontSize: 14 }}
                     autoFocus={false}
+                    onSubmitEditing={onSubmite}
                 />
 
                 <View>
@@ -128,7 +129,7 @@ const HomeHeader = ({ vegMode, setVegMode, searchValue, setSearchValue, searchBu
 
         </View>
     )
-}
+};
 
 const style = StyleSheet.create({
     container: {

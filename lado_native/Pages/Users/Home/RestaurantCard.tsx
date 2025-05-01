@@ -4,13 +4,13 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 import { safeText, theme } from "../../helper";
-import { ModeBage } from "../../../Componenet/ComponentHelper";
+import { ModeBage } from "../../../Component/ComponentHelper";
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 
-const RestrauntCard = React.memo(({ ...props }: any) => {
+const RestaurantCard = React.memo(({ ...props }: any) => {
 
-    const { name, mode, location, restrountOffer: restaurantOffer, restrountRating: restaurantRating, distance, averageDeliveryTime, description, homeBanner, key } = props?.item;
+    const { name, mode, restaurantOffer, rating, distance, averageDeliveryTime, homeBanner } = props?.item;
     const imageList: [] = useMemo(() => homeBanner || [], [homeBanner]);
 
     const width = Dimensions.get("window").width;
@@ -30,6 +30,7 @@ const RestrauntCard = React.memo(({ ...props }: any) => {
         });
     }, []);
 
+    // restaurants
     return (
         <View style={[style.container, { width: width - 20 }]} >
             <View style={{ height: 250 }}>
@@ -75,7 +76,7 @@ const RestrauntCard = React.memo(({ ...props }: any) => {
                 <View style={style.footerFirstchild}>
                     <Text style={{ fontFamily: theme.font.heading.fontFamily, fontSize: theme.font.heading.fontSize }}>{safeText(name, 30)}</Text>
                     <View style={style.rating}>
-                        <Text style={{ color: "white", fontFamily: theme.font.body.fontFamily }}>{safeText(restaurantRating)}</Text>
+                        <Text style={{ color: "white", fontFamily: theme.font.body.fontFamily }}>{safeText(rating)}</Text>
                         <Ionicons name="star" size={10} color={"white"} style={{ marginLeft: 2, marginBottom: 2 }} />
                     </View>
                 </View>
@@ -197,4 +198,4 @@ const style = StyleSheet.create({
     }
 });
 
-export default RestrauntCard;
+export default RestaurantCard;

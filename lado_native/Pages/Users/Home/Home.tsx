@@ -11,15 +11,19 @@ import {
     Pressable
 } from "react-native";
 
+//local import
 import HomeHeader from "./HomeHeader";
 import { theme } from "../../helper";
-import LadoLoader from "../../../Componenet/LadoLoader";
-import { listOFCategory, finalListOfItem } from "./helper";
-import { CardLoader, Category, CategoryFilter, FooterOfList, GoToTop } from "../../../Componenet/ComponentHelper";
-import RestrauntCard from "./RestrauntCard";
-
+import LadoLoader from "../../../Component/LadoLoader";
+import { listOFCategory, finalListOfItem, finalList } from "./helper";
+import RestaurantCard from "./RestaurantCard";
+import { CardLoader, GoToTop } from "../../../Component/ComponentHelper";
+import Category from "../../../Component/Category";
+import SelectedCategory from "../../../Component/SelectedCategory";
+import RestaurantFooter from "../../../Component/RestaurantFooter";
 
 const Home = () => {
+    let loading = false;
     const listRef = useRef(null);
 
     const navigate = useNavigation();
@@ -46,10 +50,13 @@ const Home = () => {
         return [...newList];
     })
 
-    const onRestrauntCardClick = (id: Number) => (navigate as any).navigate("restrauntView", { restrauntId: id });
-    const onSearchChange = (e: any) => setSearchValue(e);
+    const onRestaurantCardClick = (id: Number) => (navigate as any).navigate("restaurantView", { restaurantId: id });
 
-    let loading = false;
+    const onSubmite = () => {
+        console.log("submite button clicked", { searchValue, vegMode });
+        setSearchBusy(true);
+
+    }
 
     const ListHeaderComponent = React.useMemo(() => {
         return (
@@ -60,7 +67,7 @@ const Home = () => {
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}
                     searchBusy={searchBusy}
-                    onSearchChange={onSearchChange}
+                    onSubmite={onSubmite}
                 />
 
                 <FlatList
@@ -75,14 +82,13 @@ const Home = () => {
                 <FlatList
                     data={selectedCategory}
                     horizontal
-                    renderItem={({ item }) => <CategoryFilter id={item} onCategoryRemove={onCategoryRemove} />}
+                    renderItem={({ item }) => <SelectedCategory id={item} onCategoryRemove={onCategoryRemove} />}
                     keyExtractor={(item, index) => index.toString()}
                     scrollEnabled={true}
                 />
             </View>
         )
     }, [searchValue, setSearchValue, vegMode, setVegMode, searchBusy, selectedCategory]);
-
 
     if (loading) {
         return <LadoLoader /> //TODO: hide footer when loading is true
@@ -93,11 +99,11 @@ const Home = () => {
             <StatusBar barStyle="light-content" backgroundColor="#6A1B9A" />
             <FlashList
                 ref={listRef}
-                data={finalListOfItem}
-                renderItem={(props) => <Pressable onPress={() => onRestrauntCardClick(props?.item?.id)}><RestrauntCard {...props} /></Pressable>}
+                data={finalList}
+                renderItem={(props) => <Pressable onPress={() => onRestaurantCardClick(props?.item?.id)}><RestaurantCard {...props} /></Pressable>}
                 keyExtractor={(item, index) => index.toString()} //TODO:change by itemId 
                 ListHeaderComponent={ListHeaderComponent}
-                ListFooterComponent={FooterOfList}
+                ListFooterComponent={RestaurantFooter}
                 scrollEnabled={true}
                 estimatedItemSize={1200}
                 onScrollBeginDrag={() => console.log("started scrolling")}//TODO: handle in context api and hide bottom when user scrolling
@@ -130,3 +136,13 @@ const style = StyleSheet.create({
         alignContent: "center",
     }
 })
+
+
+/*
+    👉 pendding work need to do
+    
+    1️⃣ handle search and ved mode; ✅
+    * enhance footer message ✅
+    * enhance the search input must be look good ui
+    
+*/
