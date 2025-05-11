@@ -12,7 +12,8 @@ import Tracking from './Pages/Users/Tracking/Tracking';
 import Account from './Pages/Account/Account';
 
 import { theme } from './Pages/helper';
-import RestrauntView from './Pages/Users/Home/RestrauntView';
+import RestaurantView from './Pages/Users/Home/RestaurantView';
+import { useFooterStore } from './Zustand/Stores/Home.store';
 
 const Stack = createNativeStackNavigator();
 const BottomTabNavigation = createBottomTabNavigator();
@@ -49,12 +50,14 @@ const NavigatorIcon = ({ route, focused, color, size }:
 };
 
 const AllTabs = () => {
+    const { showFooter }: any = useFooterStore()
+
     return (
         <BottomTabNavigation.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: (props) => <NavigatorIcon {...props} route={route} />,
                 tabBarActiveTintColor: theme.tabIconColor,
-                tabBarStyle: { display: false ? 'none' : 'flex' },
+                tabBarStyle: { display: showFooter ? 'none' : 'flex' },
                 tabBarVisibilityAnimationConfig: {
                     show: {
                         animation: 'timing',
@@ -87,7 +90,7 @@ const AppNavigator = () => {
             <Stack.Screen name='home' component={AllTabs} options={{ headerShown: false }} />
 
             {/* Hide the bottom */}
-            <Stack.Screen name="restrauntView" component={RestrauntView} options={({ navigation }) => ({ header: () => null })} />
+            <Stack.Screen name="restaurantView" component={RestaurantView} options={({ navigation }) => ({ header: () => null })} />
             <Stack.Screen name="address" component={Address} />
             <Stack.Screen name="payment" component={Payemnt} />
             <Stack.Screen name="cart" component={Cart} />

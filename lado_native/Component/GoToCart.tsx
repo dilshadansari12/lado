@@ -1,15 +1,25 @@
 import { Pressable, Text, Touchable, View } from "react-native"
-import { theme } from "../Pages/helper";
+import { safeText, theme } from "../Pages/helper";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const GoToCart = ({ totalItem }: any) => {
+const GoToCart = ({ cart }: any) => {
     const navigation = useNavigation();
 
     const onGoToCardPress = () => {
-        (navigation as any).navigate("cart", { totalItem })
+        (navigation as any).navigate("cart")
     }
+
+    const totalRestaurant = Object.keys(cart);
+    const restaurantData = totalRestaurant.map((restaurantId, idx) => {
+        const restaurnat = cart[restaurantId];
+        return {
+            id: idx + 1,
+            totalItem: restaurnat?.restaurantItems.filter((e) => e?.qty > 0)?.length,
+            name: restaurnat?.restaurantMetaData?.name
+        }
+    }).filter((e) => e?.totalItem > 0);
 
     //TODO:redux
     return (
@@ -22,12 +32,16 @@ const GoToCart = ({ totalItem }: any) => {
                 loop={true}
                 style={{ width: 500, height: 100, position: "absolute" }}
             />
-            <Text style={{ fontFamily: theme.font.heading.fontFamily, color: theme.iconColor, fontSize: theme.font.heading.fontSize - 3 }}>{totalItem} item added</Text>
-            <Ionicons name="arrow-forward-circle-outline" style={{ alignSelf: "center", color: theme.iconColor, marginLeft: 8 }} size={22} />
+            <View>
+                {restaurantData.map((e, idx) => {
+                    return (
+                        <Text key={idx} style={{ fontFamily: theme.font.heading.fontFamily, color: theme.iconColor, fontSize: theme.font.heading.fontSize - 3 }}>{restaurantData?.length > 1 ? `${safeText(e?.name, 12)} : ` : ''} {e?.totalItem} item added</Text>
+                    )
+                })}
+            </View>
+            <Ionicons name="arrow-forward-circle-outline" style={{ alignSelf: "center", color: theme.iconColor, marginLeft: 8 }} size={32} />
         </Pressable>
     )
 }
 
 export default GoToCart;
-
-{/* <ion-icon name="arrow-forward-circle-outline"></ion-icon> */ }

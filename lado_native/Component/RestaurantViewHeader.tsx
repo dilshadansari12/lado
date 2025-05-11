@@ -1,24 +1,38 @@
-import { useState } from "react";
-
+import { Image, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { Image, StyleSheet, Text, View } from "react-native";
 
-import { isEmpty, safeText, theme } from "../Pages/helper";
 import { SearchBar } from "@rneui/base";
+import { isEmpty, safeText, theme } from "../Pages/helper";
 
-const RestrauntViewHeader = ({ searchValue, onSearchChange, onClearSearch, searchBusy, restraunt }: any) => {
 
+interface headerProps {
+    searchValue: string,
+    setSearchValue: (value: string) => void,
+    searchBusy: boolean,
+    restaurant: any,
+    showSearch: boolean,
+    setShowSearch: (show: boolean) => void,
+    onSearchSubmit: () => void
+}
+
+
+const RestaurantViewHeader = ({ searchValue, setSearchValue, searchBusy, restaurant, setShowSearch, showSearch, onSearchSubmit }: headerProps) => {
     const navigation = useNavigation();
-    const [showSearch, setShowSearch] = useState(false);
-
     const goBack = () => navigation.goBack();
+
     const searchIconClick = () => setShowSearch(true);
+    const onClearSearch = () => {
+        setSearchValue("");
+        setShowSearch(false);
+    }
+
+    const onSearchChange = (e) => setSearchValue(e);
 
     return (
         <View style={styles.container}>
-            {!isEmpty(restraunt?.restaurantImage) && (
+            {!isEmpty(restaurant?.restaurantImage) && (
                 <Image
                     source={require("../assets/hotel.jpg")}
                     alt="Food Item Images"
@@ -70,6 +84,7 @@ const RestrauntViewHeader = ({ searchValue, onSearchChange, onClearSearch, searc
                         inputStyle={{ color: theme.textInput }}
                         style={styles.searchInput}
                         autoFocus={false}
+                        onSubmitEditing={onSearchSubmit}
                     />
                 )}
             </View>
@@ -80,31 +95,31 @@ const RestrauntViewHeader = ({ searchValue, onSearchChange, onClearSearch, searc
                 end={{ x: 0.5, y: 0 }}
                 style={[
                     styles.gradient,
-                    isEmpty(restraunt?.image) ? { justifyContent: "flex-end", alignItems: "center", paddingBottom: 30 } : { justifyContent: "center", alignItems: "flex-end" }
+                    isEmpty(restaurant?.image) ? { justifyContent: "flex-end", alignItems: "center", paddingBottom: 30 } : { justifyContent: "center", alignItems: "flex-end" }
                 ]}
             >
                 <View style={styles.detailWrapper}>
                     <Text style={[styles.title, { fontFamily: theme.font.body.fontFamily }]}>
-                        {restraunt?.name}
+                        {restaurant?.name}
                     </Text>
 
                     <View style={styles.row}>
                         <View style={[styles.badge, { backgroundColor: theme.background.white }]}>
                             <Ionicons name="stopwatch-outline" size={20} color="black" style={styles.badgeIcon} />
                             <Text style={{ color: "black", fontFamily: theme.font.body.fontFamily }}>
-                                {safeText(`${restraunt?.averageDeliveryTime}`)}
+                                {safeText(`${restaurant?.averageDeliveryTime}`)}
                             </Text>
                         </View>
                         <View style={styles.ratingBadge}>
                             <Text style={{ color: "white", fontFamily: theme.font.body.fontFamily }}>
-                                {safeText(`${restraunt?.rating}`)}
+                                {safeText(`${restaurant?.rating}`)}
                             </Text>
                             <Ionicons name="star" size={10} color="white" style={styles.starIcon} />
                         </View>
                         <View style={[styles.badge, { backgroundColor: theme.background.white, marginLeft: 20 }]}>
                             <Ionicons name="location-outline" size={20} color="black" style={styles.badgeIcon} />
                             <Text style={{ color: "black", fontFamily: theme.font.body.fontFamily }}>
-                                {safeText(`${restraunt?.distance}`)}
+                                {safeText(`${restaurant?.distance}`)}
                             </Text>
                         </View>
                     </View>
@@ -114,7 +129,7 @@ const RestrauntViewHeader = ({ searchValue, onSearchChange, onClearSearch, searc
                             { fontFamily: theme.font.body.fontFamily },
                         ]}
                     >
-                        {safeText(restraunt?.location, 80)}
+                        {safeText(restaurant?.location, 80)}
                     </Text>
                 </View>
             </LinearGradient>
@@ -233,4 +248,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RestrauntViewHeader;
+export default RestaurantViewHeader;

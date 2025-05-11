@@ -12,11 +12,12 @@ import {
     ToastAndroid
 } from "react-native"
 
-import { safeText, theme } from "../Pages/helper";
+import { isEmpty, safeText, theme } from "../Pages/helper";
 import { listOFCategory } from "../Pages/Users/Home/helper";
 
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { FAB } from "@rneui/base";
+import { useCartStore, useFooterStore } from "../Zustand/Stores/Home.store";
 
 const vegCss = { backgroundColor: "green", paddingLeft: 10, fontFamily: theme.font.body.fontFamily, paddingRight: 10, paddingTop: 5, paddingBottom: 5, color: "white", marginRight: 5, borderRadius: 5, height: 30 };
 const nonVegCss = { backgroundColor: theme.background.dark, fontFamily: theme.font.body.fontFamily, paddingLeft: 10, paddingRight: 10, color: "white", paddingTop: 5, paddingBottom: 5, borderRadius: 5, height: 30 };
@@ -76,6 +77,7 @@ export const CardLoader = React.memo(() => {
 
 export const GoToTop = ({ ref }: any) => {
     const onGoToTop = () => (ref as any).current?.scrollToOffset({ offset: 0, animated: true });
+    const { cart }: any = useCartStore();
 
     return (
         <Pressable onPress={onGoToTop}
@@ -85,7 +87,7 @@ export const GoToTop = ({ ref }: any) => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                bottom: 75, //TODO: calculate on the bases of item is selected 75||10
+                bottom: isEmpty(cart) ? 10 : 75, //TODO: calculate on the bases of item is selected 75||10
                 alignSelf: "center",
                 backgroundColor: theme.background.dark,
                 padding: 10,

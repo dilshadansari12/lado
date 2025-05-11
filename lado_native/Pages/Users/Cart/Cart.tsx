@@ -13,6 +13,7 @@ import SnacksCard from "../../../Component/SnacksCard";
 import { listOfItem, snacksAndDrinks, user } from "../Home/helper";
 import SelectedItemCard from "../../../Component/SelectedItemCard";
 import CardBottomSheet from "../../../Component/CardBottomSheet";
+import { useStore } from "../../../Zustand/Stores/Home.store";
 
 
 const Cart = ({ route }: any) => {
@@ -39,8 +40,12 @@ const Cart = ({ route }: any) => {
 
     }
 
+    const increasePopulation = useStore((state: any) => state.increasePopulation)
+
+
     const onPlaceOrderPress = () => {
         console.log("hii");
+        increasePopulation;
 
     }
 
@@ -154,7 +159,7 @@ const Cart = ({ route }: any) => {
                 <View style={{ marginBottom: 10 }}>
                     <Button
                         title={"Place Order"}
-                        onPress={onPlaceOrderPress}
+                        onPress={increasePopulation}
                         color={theme.background.pimary}
                     />
                 </View>

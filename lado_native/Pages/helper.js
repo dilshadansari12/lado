@@ -44,6 +44,8 @@ export const isEmpty = value => {
   if (value === undefined || value === null) return true;
   if (typeof value === 'string' && value.trim() !== '') return false;
   if (typeof value === 'number') return false;
+  if (typeof value === 'object' && Object.keys(value)?.length >= 1)
+    return false;
   if (Array.isArray(value) && value.length >= 1) return false;
   return true;
 };
