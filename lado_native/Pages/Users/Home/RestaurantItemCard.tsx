@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useWindowDimensions, View, Text, Image, StyleSheet } from "react-native";
-import { safeText, theme } from "../../helper";
+import { distinctValue, safeText, theme } from "../../helper";
 import { ButtonGroup, Button as RneButton } from "@rneui/base";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useCartStore } from "../../../Zustand/Stores/Home.store";
 
 const RestaurantItemCard = (props: any) => {
-    const { item } = props;
+    const { item, setShowDialog } = props;
     const { name, url, price, ladoPrice, itemRating, mode, offer, description, totalOrderCount, restaurantId, id, qty } = item;
-    const { addOrUpdateItem }: any = useCartStore();
+    const { addOrUpdateItem, cart }: any = useCartStore();
 
     const { width } = useWindowDimensions();
     const finalCardWidth = width - 10;
@@ -17,19 +17,11 @@ const RestaurantItemCard = (props: any) => {
     const onPress = (action = null) => {
         const isAdd = action === 0;
         const isMinus = action === 2;
-
-        // update a state qty only which is pressed (we have a restuarnat id and itemId)
-        console.log("click");
-        console.log({ item, restaurantId });
-
-        addOrUpdateItem({ restaurantId, item: { ...item, qty: action != null ? isAdd ? qty + 1 : qty - 1 : qty + 1 } })
-
-        // setListRows((prev: any) => {
-        //     const newCardList = [...prev];
-        //     const currCardItem = newCardList?.find((e: any) => e?.id === id) || {};
-        //     newCardList.splice(id - 1, 1, { ...currCardItem, qty: action != null ? isAdd ? currCardItem?.qty + 1 : currCardItem?.qty - 1 : currCardItem?.qty + 1 });
-        //     return newCardList;
-        // })
+        if (Object.keys(cart).length > 2 && `${restaurantId}` === Object.keys(cart)[2]) {
+            setShowDialog(true);
+        } else {
+            addOrUpdateItem({ restaurantId, item: { ...item, qty: action != null ? isAdd ? qty + 1 : qty - 1 : qty + 1 } })
+        }
     }
 
     return (

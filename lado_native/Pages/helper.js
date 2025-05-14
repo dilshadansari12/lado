@@ -55,3 +55,8 @@ export const safeText = (text, length = 20) => {
   const finalString = text.slice(0, length);
   return finalString + (text.length > length ? '...' : '');
 };
+
+export const distinctValue = value => {
+  if (!Array.isArray(value)) return null;
+  return [...new Set(value)];
+};

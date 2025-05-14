@@ -2,13 +2,20 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { safeText, theme } from "../Pages/helper";
 import { ButtonGroup } from "@rneui/base";
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { useCartStore } from "../Zustand/Stores/Home.store";
 
 
 const SnacksCard = ({ item }: any) => {
-    const { name, price, imageUrl, quantity, inStock, description, brand } = item;
+    const { name, price, imageUrl, quantity, inStock, description, brand, restaurantId, qty } = item;
 
-    const onGroupPress = () => { };
-    const totalItem = 0;
+    const { updateSnacksAndDrinks }: any = useCartStore();
+
+    const onGroupPress = (action: number) => {
+        console.log({ qty, action });
+        const isAdd = action === 0;
+        const minus = action === 2
+        updateSnacksAndDrinks({ restaurantId, item: { ...item, qty: isAdd ? qty + 1 : qty <= 0 ? 0 : qty - 1 } });
+    };
 
     return (
         <View style={styles.container}>
@@ -23,12 +30,13 @@ const SnacksCard = ({ item }: any) => {
                     <View style={styles.subDetailsRow}>
                         <Text style={styles.subText}>Qty : {safeText(quantity)}</Text>
                         <Text style={styles.subText}>brand : {safeText(brand)}</Text>
+                        <Text style={styles.subText}>Price: ₹{price}</Text>
                     </View>
                 </View>
             </View>
 
             <View style={styles.rightSection}>
-                <Text style={styles.priceText}>₹{price}</Text>
+                <Text style={styles.priceText}>{qty <= 0 ? '' : `₹${price * qty}`}</Text>
                 <ButtonGroup
                     selectMultiple={false}
                     disabled={[1]}
@@ -38,7 +46,7 @@ const SnacksCard = ({ item }: any) => {
                     buttonStyle={styles.buttonGroupButton}
                     buttons={[
                         <Ionicons name="add-outline" size={10} color={theme.background.pimary} />,
-                        `${totalItem}`,
+                        `${qty}`,
                         <Ionicons name="remove-outline" size={10} color={theme.background.pimary} />
                     ]}
                     selectedIndexes={[1]}
@@ -86,7 +94,7 @@ const styles = StyleSheet.create({
     subText: {
         marginLeft: 10,
         color: "#696969",
-        fontSize: 8,
+        fontSize: 12,
         fontFamily: theme.font.body.fontFamily,
     },
     rightSection: {

@@ -18,7 +18,8 @@ import { isEmpty, theme } from "../../helper";
 import LadoLoader from "../../../Component/LadoLoader";
 import { listOFCategory, finalListOfItem, finalList } from "./helper";
 import RestaurantCard from "./RestaurantCard";
-import { CardLoader, GoToTop } from "../../../Component/ComponentHelper";
+import { CardLoader } from "../../../Component/ComponentHelper";
+import GoToTop from "../../../Component/GoToTop";
 import Category from "../../../Component/Category";
 import SelectedCategory from "../../../Component/SelectedCategory";
 import RestaurantFooter from "../../../Component/RestaurantFooter";
@@ -76,6 +77,7 @@ const Home = () => {
     }, [cart]);
 
 
+    //search submite
     const onSubmite = () => {
         console.log("submite button clicked", { searchValue, vegMode });
         setSearchBusy(true);
@@ -125,7 +127,7 @@ const Home = () => {
             <StatusBar barStyle="light-content" backgroundColor="#6A1B9A" />
             <FlashList
                 ref={listRef}
-                data={[...finalList, ...finalList, ...finalList]}
+                data={finalList} //TODO:list come from api
                 renderItem={(props) => <Pressable onPress={() => onRestaurantCardClick(props?.item?.id)}><RestaurantCard {...props} /></Pressable>}
                 keyExtractor={(item, index) => index.toString()} //TODO:change by itemId 
                 ListHeaderComponent={ListHeaderComponent}

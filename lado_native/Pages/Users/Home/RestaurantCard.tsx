@@ -9,7 +9,6 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 
 
 const RestaurantCard = React.memo(({ ...props }: any) => {
-
     const { name, mode, restaurantOffer, rating, distance, averageDeliveryTime, homeBanner } = props?.item;
     const imageList: [] = useMemo(() => homeBanner || [], [homeBanner]);
 

@@ -17,11 +17,11 @@ const GoToCart = ({ cart }: any) => {
         return {
             id: idx + 1,
             totalItem: restaurnat?.restaurantItems.filter((e) => e?.qty > 0)?.length,
-            name: restaurnat?.restaurantMetaData?.name
+            name: restaurnat?.shortName
         }
     }).filter((e) => e?.totalItem > 0);
 
-    //TODO:redux
+    //TODO:REVIEW
     return (
         <Pressable
             style={({ pressed }) => [{ height: 70, backgroundColor: pressed ? theme.background.pimary : theme.background.dark, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", position: "relative" }]}

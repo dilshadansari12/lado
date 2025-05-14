@@ -75,30 +75,6 @@ export const CardLoader = React.memo(() => {
     return <ActivityIndicator size={30} color={theme.background.dark} style={{ marginBottom: 50 }} />
 })
 
-export const GoToTop = ({ ref }: any) => {
-    const onGoToTop = () => (ref as any).current?.scrollToOffset({ offset: 0, animated: true });
-    const { cart }: any = useCartStore();
-
-    return (
-        <Pressable onPress={onGoToTop}
-            style={{
-                width: 120,
-                position: "absolute",
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                bottom: isEmpty(cart) ? 10 : 75, //TODO: calculate on the bases of item is selected 75||10
-                alignSelf: "center",
-                backgroundColor: theme.background.dark,
-                padding: 10,
-                borderRadius: 100
-            }}
-        >
-            <Text style={{ fontSize: 12, color: "white" }}>Back to top <Ionicons name="arrow-up" color={"white"} /></Text>
-        </Pressable >
-    )
-}
-
 
 // styling
 const style = StyleSheet.create({

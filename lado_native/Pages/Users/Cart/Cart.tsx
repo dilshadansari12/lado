@@ -8,27 +8,26 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 //local
-import { safeText, theme } from "../../helper";
+import { distinctValue, safeText, theme } from "../../helper";
 import SnacksCard from "../../../Component/SnacksCard";
 import { listOfItem, snacksAndDrinks, user } from "../Home/helper";
 import SelectedItemCard from "../../../Component/SelectedItemCard";
 import CardBottomSheet from "../../../Component/CardBottomSheet";
-import { useStore } from "../../../Zustand/Stores/Home.store";
+import { useCartStore, useStore } from "../../../Zustand/Stores/Home.store";
 
 
-const Cart = ({ route }: any) => {
-    const { totalItem } = route?.params;
+const Cart = () => {
     const { location, name, phoneNo } = user;
-    const naigation = useNavigation();
-    const bottomSheetRef = useRef<BottomSheet>(null);
 
+    const navigation = useNavigation();
+    const { cart }: any = useCartStore();
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
     const [bottomSheetType, setBottomSheetType] = useState<string>("");
 
-    const totalSelectedItemsIds = [1, 2, 3, 4, 5, 8, 9];
-    const allSelectedItems = listOfItem.filter((e) => totalSelectedItemsIds.includes(e?.id));
-
-    const onAddMoreItem = () => {
-        console.log("onAddMoreItem");
+    const onAddMoreItem = (id: number) => {
+        console.log("hii", { id });
+        (navigation as any).navigate("restaurantView", { restaurantId: id });
     }
 
     const avgDeliveryTime = "40-45 mins";
@@ -40,15 +39,9 @@ const Cart = ({ route }: any) => {
 
     }
 
-    const increasePopulation = useStore((state: any) => state.increasePopulation)
-
-
     const onPlaceOrderPress = () => {
         console.log("hii");
-        increasePopulation;
-
     }
-
 
     // callbacks
     const handleSheetChanges = useCallback((index: number) => {
@@ -59,60 +52,73 @@ const Cart = ({ route }: any) => {
         bottomSheetRef.current?.close();
     }
 
+    const restaunratKeys = distinctValue(Object.values(cart).flatMap((e: any) => e?.restaurantItems.map((e: any) => ({ restaurantId: e?.restaurantId, qty: e?.qty }))).filter((e) => e?.qty > 0).map((e) => e?.restaurantId)) || [];
     return (
         <View style={styles.container}>
             <ScrollView>
                 <StatusBar barStyle="light-content" hidden={false} />
-                <View style={styles.wrapper}>
-                    {allSelectedItems.map((item, idx) => (
-                        <SelectedItemCard item={item} key={idx} />
-                    ))}
+                {restaunratKeys.map((key, idx) => {
+                    const restaunrat = cart[key];
+                    const restaurantSelectedItem = restaunrat?.restaurantItems.filter((e) => e?.qty > 0) || [];
+                    const totalAmount = restaurantSelectedItem.reduce((acc, curr) => acc + curr?.price * curr?.qty, 0) || 0;
+                    const totalAmoutOfSnacks = restaunrat?.snacksAndDrinks?.filter((e => e?.qty > 0)).reduce((acc, curr) => acc + curr?.price * curr?.qty, 0) || 0;
 
-                    <Pressable
-                        onPress={onAddMoreItem}
-                        style={({ pressed }) => [
-                            styles.addMoreButton,
-                            { borderColor: pressed ? "#696969" : theme.background.pimary }
-                        ]}
-                    >
-                        <Ionicons name="add-outline" size={18} color={"#696969"} />
-                        <Text style={styles.textSmall}>Add more item</Text>
-                    </Pressable>
+                    return (
+                        <View key={idx} >
+                            <Text style={styles.restaurantName}>{safeText(restaunrat?.name, 40)}</Text>
+                            <View style={styles.wrapper}>
+                                {restaurantSelectedItem.map((item: any, idx: number) => (
+                                    <SelectedItemCard item={item} key={idx} />
+                                ))}
 
-                    <View style={styles.cartHeader}>
-                        <View style={styles.cartHeaderLeft}>
-                            <LottieView
-                                source={require('../../../assets/cart.json')}
-                                autoPlay
-                                loop={true}
-                                style={styles.cartIcon}
-                            />
-                            <Text style={styles.cartText}>Cart Item</Text>
+                                <Pressable
+                                    onPress={() => onAddMoreItem(restaunrat?.id)}
+                                    style={({ pressed }) => [
+                                        styles.addMoreButton,
+                                        { borderColor: pressed ? "#696969" : theme.background.pimary }
+                                    ]}
+                                >
+                                    <Ionicons name="add-outline" size={18} color={"#696969"} />
+                                    <Text style={styles.textSmall}>Add more item</Text>
+                                </Pressable>
+
+                                <View style={styles.cartHeader}>
+                                    <View style={styles.cartHeaderLeft}>
+                                        <LottieView
+                                            source={require('../../../assets/cart.json')}
+                                            autoPlay
+                                            loop={true}
+                                            style={styles.cartIcon}
+                                        />
+                                        <Text style={styles.cartText}>Cart Item</Text>
+                                    </View>
+                                    <Text style={[styles.cartText, { marginRight: 10 }]}>Total ₹{totalAmount}</Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.snackContainer}>
+                                <ScrollView nestedScrollEnabled={true}>
+                                    {restaunrat?.snacksAndDrinks.map((item, idx) => (
+                                        <SnacksCard item={item} key={idx} />
+                                    ))}
+                                </ScrollView>
+
+                                <View style={styles.snackHeader}>
+                                    <View style={styles.snackHeaderLeft}>
+                                        <LottieView
+                                            source={require('../../../assets/snaks.json')}
+                                            autoPlay
+                                            loop={true}
+                                            style={styles.snackIcon}
+                                        />
+                                        <Text style={styles.cartText}>Add Snacks</Text>
+                                    </View>
+                                    <Text style={[styles.cartText, { marginRight: 10 }]}> Total  ₹{totalAmoutOfSnacks}</Text>
+                                </View>
+                            </View>
                         </View>
-                        <Text style={styles.cartText}>₹500</Text>
-                    </View>
-                </View>
-
-                <View style={styles.snackContainer}>
-                    <ScrollView nestedScrollEnabled={true}>
-                        {snacksAndDrinks.map((item, idx) => (
-                            <SnacksCard item={item} key={idx} />
-                        ))}
-                    </ScrollView>
-
-                    <View style={styles.snackHeader}>
-                        <View style={styles.snackHeaderLeft}>
-                            <LottieView
-                                source={require('../../../assets/snaks.json')}
-                                autoPlay
-                                loop={true}
-                                style={styles.snackIcon}
-                            />
-                            <Text style={styles.cartText}>Add Snacks</Text>
-                        </View>
-                        <Text style={styles.cartText}>₹500</Text>
-                    </View>
-                </View>
+                    )
+                })}
 
                 <View style={styles.infoContainer}>
                     <View style={styles.dashedRow}>
@@ -159,11 +165,11 @@ const Cart = ({ route }: any) => {
                 <View style={{ marginBottom: 10 }}>
                     <Button
                         title={"Place Order"}
-                        onPress={increasePopulation}
+                        onPress={() => { }}
                         color={theme.background.pimary}
                     />
                 </View>
-            </ScrollView>
+            </ScrollView >
 
             <CardBottomSheet
                 bottomSheetRef={bottomSheetRef}
@@ -171,7 +177,7 @@ const Cart = ({ route }: any) => {
                 onClose={onClose}
                 type={bottomSheetType}
             />
-        </View>
+        </View >
     )
 }
 
@@ -322,6 +328,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    restaurantName: {
+        borderWidth: 1,
+        borderColor: theme.background.pimary,
+        marginTop: 20,
+        width: "80%",
+        alignSelf: "center",
+        textAlign: "center",
+        fontFamily: theme.font.heading.fontFamily,
+        fontSize: theme.font.heading.fontSize,
+        color: theme.background.pimary,
+        borderRadius: 5
+    }
 });
 
 

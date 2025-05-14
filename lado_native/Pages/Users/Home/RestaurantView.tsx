@@ -8,7 +8,8 @@ import GoToCart from "../../../Component/GoToCart";
 import RestaurantItemCard from "./RestaurantItemCard";
 import { useCartStore, useFooterStore } from "../../../Zustand/Stores/Home.store";
 import RestaurantFooter from "../../../Component/RestaurantFooter";
-import { CardLoader, GoToTop } from "../../../Component/ComponentHelper";
+import { CardLoader } from "../../../Component/ComponentHelper";
+import GoToTop from "../../../Component/GoToTop";
 import RestaurantViewHeader from "../../../Component/RestaurantViewHeader";
 import InformationDialog from "../../../Component/InformationDialog";
 
@@ -21,8 +22,7 @@ const RestaurantView = ({ route }: any) => {
 
     //zuston
     const { setShowFooter }: any = useFooterStore();
-    const { addToCart, cart }: any = useCartStore();
-    console.log({ cart, is: isEmpty(cart) });
+    const { addToCart, cart, clearCart }: any = useCartStore();
 
     //state
     const [showGoToTop, setShowGoToTop] = useState<boolean>(false);
@@ -30,21 +30,22 @@ const RestaurantView = ({ route }: any) => {
     const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
     const [showGoToCard, setShowGoToCard] = useState<boolean>(false);
+    const [showdialog, setShowDialog] = useState<boolean>(false);
 
     //api call 
     const restaurant = finalList.find(e => e?.id === restaurantId);
     const final = restaurant?.restaurantItems || [];
+    const snacksAndDrinks = restaurant?.snacksAndDrinks || [];
 
     //setInitialState
     useEffect(() => {
-        const refreshList = isEmpty(cart) || !Object.keys(cart)?.includes(`${restaurantId}`) || (!isEmpty(cart) && cart[restaurantId]?.restaurantItems?.length < final?.length);
-        console.log({ refreshList, restaurantId });
-
-        if (refreshList) { // TODO:REVIEW
+        const refreshList = isEmpty(cart) || !Object.keys(cart)?.includes(`${restaurantId}`) || (!isEmpty(cart) && cart[restaurantId]?.restaurantItems?.length < final?.length); //TODO:REVIEW THIS LOGIC
+        if (refreshList) {
             const state = {
                 [restaurantId]: {
-                    restaurantMetaData: { name: restaurant?.name },
-                    restaurantItems: final.map((e) => ({ ...e, qty: 0 }))
+                    ...restaurant,
+                    restaurantItems: final.map((e) => ({ ...e, qty: 0 })),
+                    snacksAndDrinks: snacksAndDrinks.map((e) => ({ ...e, qty: 0 }))
                 }
             }
             addToCart(state);
@@ -102,7 +103,7 @@ const RestaurantView = ({ route }: any) => {
     }, [searchValue, setSearchValue, searchBusy, restaurant, showSearchBar, setShowSearchBar, onSearchSubmit]);
 
     const Item = useCallback((props: any) => {
-        return <RestaurantItemCard {...props} />
+        return <RestaurantItemCard {...props} setShowDialog={setShowDialog} />
     }, [cart, restaurantId, final])
 
     const GoToCarts = useMemo(() => <GoToCart cart={cart} />, [cart]);
@@ -110,7 +111,18 @@ const RestaurantView = ({ route }: any) => {
     return (
         <View style={{ flex: 1 }}>
             <StatusBar barStyle="light-content" hidden={true} />
-            <InformationDialog visible={false} closeDialog={() => { }} type="warning" title="We cont allow" description={"we don't allow more the two restaurant orders"} />
+            <InformationDialog
+                visible={showdialog}
+                type="warning"
+                title="Limit Reached"
+                rightButtonTitle="Replace"
+                description="For smoother delivery and better coordination, we only allow orders from  2 restaurants at a time. Please complete or remove an existing order before adding a new one."
+                onLeftPress={() => setShowDialog(false)}
+                onRightPress={() => {
+                    clearCart();
+                    setShowDialog(false);
+                }}
+            />
             <FlashList
                 ref={listRef}
                 data={cart[restaurantId]?.restaurantItems || []}
@@ -132,18 +144,9 @@ const RestaurantView = ({ route }: any) => {
 
 export default RestaurantView;
 
-/*
- pending work to do 
-     * show a go to cart and show a selected item from different restaurant
-     * check not allow user to order more than two hotel
-     * enh the informationcart
-     * 
-     * 
-     
+/*     
 ||--------state managment --- ||
    * first save all restaurantItem in redux state with qty zero
    * use go back -> and then come first check is there is any thing saved in state (if yes then don;t fetch just);
         -> if the comming list is greter than , state length (clear storage and refetch all new);
-
-
 */

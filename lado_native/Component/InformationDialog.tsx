@@ -1,14 +1,17 @@
 import { Button, Card, Overlay } from "@rneui/base"
 import { Text, View } from "react-native"
-import { theme } from "../Pages/helper";
+import { isEmpty, safeText, theme } from "../Pages/helper";
 import LottieView from "lottie-react-native";
 
 interface InformationDialogProps {
     visible: boolean,
-    closeDialog?: () => void,
+    onLeftPress?: () => void,
+    onRightPress?: () => void,
     type: string,
     title: string,
-    description: string
+    description: string,
+    leftButtonTitle?: string,
+    rightButtonTitle?: string
 }
 
 const findLotties = (type: string) => {
@@ -23,13 +26,13 @@ const findLotties = (type: string) => {
     }
 }
 
-const InformationDialog = ({ visible, closeDialog, type = "info" }: InformationDialogProps) => {
+const InformationDialog = ({ visible, onRightPress, onLeftPress, type = "info", title, description, leftButtonTitle, rightButtonTitle }: InformationDialogProps) => {
     const { source, iconStyle } = findLotties(type);
     return (
         <Overlay
             isVisible={visible}
-            onBackdropPress={closeDialog}
-            overlayStyle={{ width: "80%", alignSelf: "center", minHeight: 250, backgroundColor: theme.background.white, borderRadius: 5, position: "relative" }}
+            onBackdropPress={onLeftPress}
+            overlayStyle={{ width: "80%", alignSelf: "center", minHeight: 50, backgroundColor: theme.background.white, borderRadius: 5, position: "relative" }}
         >
             <View style={{ height: 80, width: 80, borderRadius: 50, position: "absolute", top: -40, left: "40%", backgroundColor: theme.background.white, display: "flex", justifyContent: "center" }}>
                 <LottieView
@@ -41,14 +44,14 @@ const InformationDialog = ({ visible, closeDialog, type = "info" }: InformationD
             </View>
 
             <View style={{ marginTop: 35 }}>
-                <Card.Title style={{ fontFamily: theme.font.body.fontFamily }}>You Are Out Of Boundery</Card.Title>
+                <Card.Title style={{ fontFamily: theme.font.body.fontFamily }}>{safeText(title, 100)}</Card.Title>
                 <Card.Divider />
-                <Text style={{ fontFamily: theme.font.body.fontFamily, color: theme.font.body.color, marginTop: 10, textAlign: "center" }} >Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis voluptatibus obcaecati dolor facere, veniam ut quas id adipisci architecto sequi! Saepe asperiores animi aspernatur nulla, aliquam illo? Animi, ea necessitatibus!</Text>
+                <Text style={{ fontFamily: theme.font.body.fontFamily, color: theme.font.body.color, marginTop: 10, textAlign: "center" }} >{safeText(description, 400)}</Text>
             </View>
 
             <View style={{ display: "flex", flexDirection: "row-reverse", marginTop: 5 }}>
-                <Button title="Ok" containerStyle={{ width: 80, marginRight: 5 }} color={theme.background.pimary} />
-                <Button title="close" type="outline" containerStyle={{ width: 80, marginRight: 10 }} onPress={closeDialog} />
+                <Button title={isEmpty(rightButtonTitle) ? "Ok" : rightButtonTitle} containerStyle={{ width: 80, marginRight: 5 }} color={theme.background.pimary} onPress={onRightPress} />
+                <Button title={isEmpty(leftButtonTitle) ? "close" : leftButtonTitle} type="outline" containerStyle={{ width: 80, marginRight: 10 }} onPress={onLeftPress} />
             </View>
         </Overlay >
     )

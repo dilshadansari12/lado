@@ -8,7 +8,8 @@ import SplashScreen from 'react-native-splash-screen';
 import AppNavigator from './AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 type SectionProps = PropsWithChildren<{
   title: string;
