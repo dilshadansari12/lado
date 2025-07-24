@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View, Button } from "react-native"
 
 //library
@@ -14,6 +14,7 @@ import { listOfItem, snacksAndDrinks, user } from "../Home/helper";
 import SelectedItemCard from "../../../Component/SelectedItemCard";
 import CardBottomSheet from "../../../Component/CardBottomSheet";
 import { useCartStore, useStore } from "../../../Zustand/Stores/Home.store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Cart = () => {

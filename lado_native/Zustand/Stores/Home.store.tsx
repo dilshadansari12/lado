@@ -3,12 +3,20 @@ import { persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export const useStore = create((set) => ({
-    bears: 1,
-    increasePopulation: () => set((state: any) => ({ bears: state.bears + 1 })),
-    removeAllBears: () => set({ bears: 0 }),
-    updateBears: (newBears: any) => set({ bears: newBears }),
-}))
+export const useStore = create(
+    persist(
+        (set) => ({
+            bears: 1,
+            increasePopulation: () => set((state: any) => ({ bears: state.bears + 1 })),
+            removeAllBears: () => set({ bears: 0 }),
+            updateBears: (newBears: any) => set({ bears: newBears }),
+        }),
+        {
+            name: 'count',
+            getStorage: () => AsyncStorage,
+        }
+    )
+)
 
 export const useFooterStore = create((set) => ({
     showFooter: false,
@@ -85,7 +93,11 @@ export const useCartStore = create(
         }),
         {
             name: 'cart-storage',
-            getStorage: () => AsyncStorage,
+            // getStorage: () => AsyncStorage,
+            // onRehydrateStorage: () => (state) => {
+            //     console.log({ state });
+            //     state?.setHydrated?.();
+            // },
         }
     )
 );

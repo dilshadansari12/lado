@@ -124,7 +124,7 @@ const Home = () => {
 
     return (
         <View style={style.container} renderToHardwareTextureAndroid={true}>
-            <StatusBar barStyle="light-content" backgroundColor="#6A1B9A" />
+            <StatusBar barStyle="light-content" hidden={true} backgroundColor="#6A1B9A" />
             <FlashList
                 ref={listRef}
                 data={finalList} //TODO:list come from api
