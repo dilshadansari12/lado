@@ -1,97 +1,75 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+how to run wihtout usb
 
-# Getting Started
+FRIST TIME NEED TO BE CONNECT AND RUN BY USING USB
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+- connect the USB cable.
+- Go to Settings → About Phone → Tap "Build Number" 7 times to enable Developer Options.
+- Go to Settings → Developer Options → Enable USB Debugging.
+- Also, enable Wireless Debugging if using Android 11+.
+- Run this command to check if your device is detected (adb devices):
+- Go to Settings → Wi-Fi → Click on the Connected Network → Note the IP Address (e.g., 192.168.1.1).
+- Run this command to enable TCP/IP mode for ADB : adb tcpip 5555
+- Disconnect the USB cable.
+- adb connect 192.168.1.5:5555
+- npx react-native run-android
 
-## Step 1: Start Metro
+✅ splasch screen
+✅ folder structure
+✅ Router Set-up
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+-- \*\* Users ---
+1️⃣ Home (header -> food category default is all) -> all food cart
+👉 Order View : header show restraunt name (list there all items) wwhen clikc on plus icon opne a bottom slider to add to card;
+on click go to cart -> go to order pages
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+    2️⃣ Cart Screen (show all selected product and have a option to remove and view there product) and button to add addres
+     👉 Address : show previous order to edit , or select from map -> show all prices final -> go to pay
+     👉 show all payment method and take a payemnt and show
+     👉 order conformation screen (redirect to tracking screen)
 
-```sh
-# Using npm
-npm start
+     3️⃣ Traccking  (tracking map -> order Name -> item read only -> download invoide)
+     4️⃣ profile -> (show user profile )
+      👉 edit basic info
+      👉 order history
 
-# OR using Yarn
-yarn start
-```
 
-## Step 2: Build and run your app
+//**  1️⃣ Logo desgin is pending  ***//
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+* measure a image size for banner/restaurant/item image size
 
-### Android
+* create A LADO (text logo) new way, For APP ;
+* create a splash screen of lado by Effect -> 
+    i am thinking to create something on Home Page Loading is like show garhwa ghanta ghar image in main screen and  in down show lado animeted text loading
+    ites fell like this is for garhwa  
 
-```sh
-# Using npm
-npm run android
 
-# OR using Yarn
-yarn android
-```
+//** 2️⃣ Login And WelCome Screen **//
 
-### iOS
+* Log In Screen
+* singUp Screen
+* Select Location
+* Location Check (if the location is not mached the show a error and tell to come under delivery area)
+    do same at firs time open/whe they inter location
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+//** 3️⃣ Home (Optimise) **//
 
-```sh
-bundle install
-```
+ -> header
+ -> banner carosol screen
+ -> filter Items
+ -> restaurant card 
 
-Then, and every time you update your native dependencies, run:
+ * Restaurant View (not optimized code)
+    * carosal restaurant Image View (Check for standerd size )
+    * header search - back
+    * food card
+    * selected Item - go To Top
+    * provde whathsap button as ask for healp (think about it)
 
-```sh
-bundle exec pod install
-```
+* Cat (This Screen is Required a re desgin and optimization)
+    * show all selected Cart
+    
+ 
+//** 4️⃣   **//
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
